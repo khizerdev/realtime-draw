@@ -1,9 +1,12 @@
 import React from 'react';
+import { useMenuStore } from '../store/use-menu';
 
 const Toolbox = () => {
+  const currentActiveItem = useMenuStore((state) => state.activeMenuItem);
+  const isPencilSelected = currentActiveItem === 'Pencil';
   return (
     <div className="p-3 flex rounded-s-lg gap-10">
-      <div className="flex gap-1">
+      <div className={`flex gap-1 ${!isPencilSelected ? 'invisible' : ''}`}>
         <button className="btn-color">
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#18181b]"></span>
         </button>

@@ -4,7 +4,7 @@
 
 @layer components {
   .btn-icon {
-    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-[#fff] transition-colors focus-visible:outline-none focus-visible:ring-2  focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border hover:bg-[#f4f4f5] h-10 w-10;
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-[#fff] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border hover:bg-[#f4f4f5] h-10 w-10;
   }
 
   .btn-color {
