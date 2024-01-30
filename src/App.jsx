@@ -5,7 +5,7 @@ import DrawingPad from './components/drawing-pad';
 
 function App() {
   return (
-    <section className="relative h-full">
+    <section className="relative">
       <Navbar />
       <DrawingPad />
     </section>

@@ -45,7 +45,13 @@ const Toolbox = () => {
       </div>
       <div className="flex gap-2">
         <p className="leading-loose mb-0">Brush Size</p>
-        <input type="range" min={0} max={10} onChange={(e) => updateSize(e.target.value)} />
+        <input
+          type="range"
+          min={0}
+          max={10}
+          value={size}
+          onChange={(e) => updateSize(e.target.value)}
+        />
       </div>
     </div>
   );
