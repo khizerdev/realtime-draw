@@ -50,7 +50,14 @@ const DrawingPad = () => {
     };
   }, []);
 
-  return <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>;
+  return (
+    <canvas
+      id="canvas"
+      ref={canvasRef}
+      width={window.innerWidth}
+      height={window.innerHeight}
+    ></canvas>
+  );
 };
 
 export default DrawingPad;

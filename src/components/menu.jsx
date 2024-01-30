@@ -1,5 +1,5 @@
 import { Download, Eraser, Pencil, Redo, Undo } from 'lucide-react';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useMenuStore } from '../store/use-menu';
 import { useToolboxStore } from '../store/use-toolbox';
 
@@ -9,6 +9,14 @@ const Menu = () => {
   const activeMenuItem = useMenuStore((state) => state.activeMenuItem);
   const isPencilSelected = activeMenuItem === 'Pencil';
   const isEraserSelected = activeMenuItem === 'Eraser';
+
+  const [dataUrl, setDataUrl] = useState('#');
+
+  const handleDownload = useCallback(() => {
+    const canvas = document.getElementById('canvas');
+    var dataURL = canvas.toDataURL('image/png');
+    setDataUrl(dataURL);
+  }, []);
 
   return (
     <div className="flex gap-3">
@@ -36,9 +44,9 @@ const Menu = () => {
       <button className="btn-icon">
         <Redo size={18} />
       </button>
-      <button className="btn-icon">
+      <a className="btn-icon" download="image.png" onClick={handleDownload} href={dataUrl}>
         <Download size={18} />
-      </button>
+      </a>
     </div>
   );
 };
