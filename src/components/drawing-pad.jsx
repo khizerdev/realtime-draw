@@ -1,7 +1,12 @@
 import React, { useEffect, useRef } from 'react';
+import { useToolboxStore } from '../store/use-toolbox';
+import { useMenuStore } from '../store/use-menu';
 
 const DrawingPad = () => {
   const canvasRef = useRef(null);
+
+  const currentActiveItem = useMenuStore((state) => state.activeMenuItem);
+  const { color, size } = useToolboxStore((state) => state.currentTool);
 
   useEffect(() => {
     if (!canvasRef.current) return;
