@@ -6,6 +6,7 @@ import { useToolboxStore } from '../store/use-toolbox';
 const Menu = () => {
   const updateColor = useToolboxStore((state) => state.updateColor);
   const menuItemClick = useMenuStore((state) => state.menuItemClick);
+  const actionItemClick = useMenuStore((state) => state.actionItemClick);
   const activeMenuItem = useMenuStore((state) => state.activeMenuItem);
   const isPencilSelected = activeMenuItem === 'Pencil';
   const isEraserSelected = activeMenuItem === 'Eraser';
@@ -38,10 +39,10 @@ const Menu = () => {
       >
         <Eraser size={18} />
       </button>
-      <button className="btn-icon">
+      <button className="btn-icon" onClick={() => actionItemClick('Undo')}>
         <Undo size={18} />
       </button>
-      <button className="btn-icon">
+      <button className="btn-icon" onClick={() => actionItemClick('Redo')}>
         <Redo size={18} />
       </button>
       <a className="btn-icon" download="image.png" onClick={handleDownload} href={dataUrl}>

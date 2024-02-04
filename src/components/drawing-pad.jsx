@@ -7,7 +7,12 @@ const DrawingPad = () => {
   const shouldDraw = useRef(false);
 
   const currentActiveItem = useMenuStore((state) => state.activeMenuItem);
+  const actionMenuItem = useMenuStore((state) => state.actionMenuItem);
+  const actionItemClick = useMenuStore((state) => state.actionItemClick);
   const { color, size } = useToolboxStore((state) => state.currentTool);
+
+  const drawHistory = useRef([]);
+  const historyPointer = useRef(0);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -17,6 +22,31 @@ const DrawingPad = () => {
     context.strokeStyle = color;
     context.lineWidth = size;
   }, [color, size]);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    if (actionMenuItem == 'Undo') {
+      console.log(historyPointer);
+      if (historyPointer.current > 0) {
+        historyPointer.current -= 1;
+      }
+      console.log(historyPointer);
+      const imageData = drawHistory.current[historyPointer.current];
+      context.putImageData(imageData, 0, 0);
+    }
+
+    if (actionMenuItem == 'Redo') {
+      if (historyPointer.current < drawHistory.current.length - 1) {
+        historyPointer.current += 1;
+      }
+      const imageData = drawHistory.current[historyPointer.current];
+      context.putImageData(imageData, 0, 0);
+    }
+
+    actionItemClick(null);
+  }, [actionMenuItem]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -37,6 +67,9 @@ const DrawingPad = () => {
 
     function handleMouseUp(e) {
       shouldDraw.current = false;
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      drawHistory.current.push(imageData);
+      historyPointer.current = drawHistory.current.length - 1;
     }
 
     canvas.addEventListener('mousedown', handleMouseDown);
