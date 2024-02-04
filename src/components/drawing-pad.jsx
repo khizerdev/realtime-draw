@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { io } from 'socket.io-client';
 import { useToolboxStore } from '../store/use-toolbox';
 import { useMenuStore } from '../store/use-menu';
+
+const socket = io.connect('http://localhost:5000');
 
 const DrawingPad = () => {
   const canvasRef = useRef(null);
@@ -13,6 +16,13 @@ const DrawingPad = () => {
 
   const drawHistory = useRef([]);
   const historyPointer = useRef(0);
+
+  useEffect(() => {
+    // client-side
+    socket.on('connect', () => {
+      console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+    });
+  }, [socket]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -28,13 +38,13 @@ const DrawingPad = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     if (actionMenuItem == 'Undo') {
-      console.log(historyPointer);
       if (historyPointer.current > 0) {
         historyPointer.current -= 1;
       }
-      console.log(historyPointer);
       const imageData = drawHistory.current[historyPointer.current];
       context.putImageData(imageData, 0, 0);
+      const imageCanvas = context.getImageData(0, 0, canvas.width, canvas.height);
+      drawHistory.current.push(imageCanvas);
     }
 
     if (actionMenuItem == 'Redo') {
@@ -43,6 +53,8 @@ const DrawingPad = () => {
       }
       const imageData = drawHistory.current[historyPointer.current];
       context.putImageData(imageData, 0, 0);
+      const imageCanvas = context.getImageData(0, 0, canvas.width, canvas.height);
+      drawHistory.current.push(imageCanvas);
     }
 
     actionItemClick(null);
