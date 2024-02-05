@@ -9,7 +9,6 @@ const DrawingPad = () => {
   const canvasRef = useRef(null);
   const shouldDraw = useRef(false);
 
-  const currentActiveItem = useMenuStore((state) => state.activeMenuItem);
   const actionMenuItem = useMenuStore((state) => state.actionMenuItem);
   const actionItemClick = useMenuStore((state) => state.actionItemClick);
   const { color, size } = useToolboxStore((state) => state.currentTool);
@@ -18,9 +17,8 @@ const DrawingPad = () => {
   const historyPointer = useRef(0);
 
   useEffect(() => {
-    // client-side
     socket.on('connect', () => {
-      console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+      console.log(socket.id);
     });
   }, [socket]);
 
@@ -29,8 +27,20 @@ const DrawingPad = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
-    context.strokeStyle = color;
-    context.lineWidth = size;
+    const changeConfig = (color, size) => {
+      context.strokeStyle = color;
+      context.lineWidth = size;
+    };
+
+    const handleChangeConfig = (config) => {
+      changeConfig(config.color, config.size);
+    };
+    changeConfig(color, size);
+    socket.on('changeConfig', handleChangeConfig);
+
+    return () => {
+      socket.off('changeConfig', handleChangeConfig);
+    };
   }, [color, size]);
 
   useEffect(() => {
@@ -65,16 +75,26 @@ const DrawingPad = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
+    const beginPath = (x, y) => {
+      context.beginPath();
+      context.moveTo(x, y);
+    };
+
+    const drawLine = (x, y) => {
+      context.lineTo(x, y);
+      context.stroke();
+    };
+
     function handleMouseDown(e) {
       shouldDraw.current = true;
-      context.beginPath();
-      context.moveTo(e.offsetX, e.offsetY);
+      beginPath(e.offsetX, e.offsetY);
+      socket.emit('beginPath', { x: e.offsetX, y: e.offsetY });
     }
 
     function handleMouseMove(e) {
       if (!shouldDraw.current) return;
-      context.lineTo(e.offsetX, e.offsetY);
-      context.stroke();
+      drawLine(e.offsetX, e.offsetY);
+      socket.emit('drawLine', { x: e.offsetX, y: e.offsetY });
     }
 
     function handleMouseUp(e) {
@@ -84,14 +104,28 @@ const DrawingPad = () => {
       historyPointer.current = drawHistory.current.length - 1;
     }
 
+    const handleBeginPath = (path) => {
+      beginPath(path.x, path.y);
+    };
+
+    const handleDrawLine = (path) => {
+      drawLine(path.x, path.y);
+    };
+
     canvas.addEventListener('mousedown', handleMouseDown);
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseup', handleMouseUp);
+
+    socket.on('beginPath', handleBeginPath);
+    socket.on('drawLine', handleDrawLine);
 
     return () => {
       canvas.removeEventListener('mousedown', handleMouseDown);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseup', handleMouseUp);
+
+      socket.off('beginPath', handleBeginPath);
+      socket.off('drawLine', handleDrawLine);
     };
   }, []);
 
