@@ -1,8 +1,31 @@
-# React + Vite
+# Real-Time Drawing Board With React, Zustand, Socket.io Tailwind
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+(https://github.com/khizerdev/realtime-draw)
 
-Currently, two official plugins are available:
+Highlighted Features:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Whiteboard from scratch 🔥
+- Toolbar with color and eraser 🎨
+- Resize brush size 🔥
+- Coloring system 🎨
+- Undo & Redo functionality
+- Real-time collaboration 💾
+- Zustand Store 🔥
+- Download Board Feature 🔥
+- TailwindCSS styling 💅
+
+Getting Started
+First, run the development server:
+
+npm run dev
+
+# or
+
+yarn dev
+
+# or
+
+pnpm dev
+Open http://localhost:3000 with your browser to see the result.
+
+You can start editing the page by modifying app/page.tsx. The page auto-updates as you edit the file.
